@@ -18,11 +18,17 @@ export const patchMessage = (): void => {
   ) as unknown as string;
   PluginInjector.before(MessageConstructor, defaultFunction, (args: [Types.messageDiv]) => {
     const [messageDiv] = args;
-    if (!messageDiv || messageDiv?.className?.includes(MessageClasses.selected)) return args;
+    if (
+      !messageDiv ||
+      messageDiv?.className?.includes(MessageClasses.selected) ||
+      typeof messageDiv?.onClick !== "function"
+    )
+      return args && console.log(messageDiv);
     const message = Utils.findInTree(messageDiv, (m) =>
       Utils.hasProps(m, ["author", "content"]),
     ) as Types.Message;
     if (!message) return args;
+    console.log();
     PluginInjector.instead(
       messageDiv,
       "onClick",
