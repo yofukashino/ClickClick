@@ -13,4 +13,7 @@ Install Link:
 
 ![image](https://tharki-god.github.io/files-random-host/bdpluginsassets/clickclick.gif)
 
+<sub>Inspired by a Aliucord Kotlin plugin made by
+[Vendicated](https://github.com/Vendicated/AliucordPlugins/tree/main/TapTap).</sub>
+
 > For Contributing: [Make a pr thats all.]
