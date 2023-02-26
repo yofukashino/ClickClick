@@ -5,4 +5,5 @@ export const defaultSettings = {
   replyModifier: "none",
   copy: false,
   copyModifier: "alt",
+  hideContextMenuItem: false,
 };
