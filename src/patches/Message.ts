@@ -21,14 +21,13 @@ export const patchMessage = (): void => {
     if (
       !messageDiv ||
       messageDiv?.className?.includes(MessageClasses.selected) ||
-      typeof messageDiv?.onClick !== "function"
+      messageDiv?.onClick
     )
-      return args && console.log(messageDiv);
+      return args;
     const message = Utils.findInTree(messageDiv, (m) =>
       Utils.hasProps(m, ["author", "content"]),
     ) as Types.Message;
     if (!message) return args;
-    console.log();
     PluginInjector.instead(
       messageDiv,
       "onClick",
