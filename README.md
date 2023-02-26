@@ -6,7 +6,7 @@ click while holding a key to copy content.
 Also hide the options you dont need from context menu (can be turned on in plugins setting).
 
 Direct Download Link:
-[Tharki.ClickClick.asar](https://github.com/Tharki-God/DevTools/releases/latest/download/Tharki.ClickClick.asar)
+[Tharki.ClickClick.asar](https://github.com/Tharki-God/ClickClick/releases/latest/download/Tharki.ClickClick.asar)
 
 Install Link:
 [![Install in Replugged](https://img.shields.io/badge/-Install%20in%20Replugged-blue?style=for-the-badge&logo=none)](https://replugged.dev/install?identifier=Tharki-God/ClickClick&source=github)
