@@ -21,7 +21,7 @@ export const patchMessage = (): void => {
     if (
       !messageDiv ||
       messageDiv?.className?.includes(MessageClasses.selected) ||
-      messageDiv?.onClick
+      typeof messageDiv?.onClick !== "function"
     )
       return args;
     const message = Utils.findInTree(messageDiv, (m) =>
@@ -42,7 +42,6 @@ export const patchMessage = (): void => {
           )
         )
           DiscordNative.clipboard.copy(message.content);
-        console.log(message?.author?.id, UserStore.getCurrentUser()?.id);
         if (
           Utils.checkForModifier(
             SettingValues.get("edit", defaultSettings.edit),
