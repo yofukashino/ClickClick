@@ -276,7 +276,6 @@ export interface Message {
   blocked: boolean;
   bot: boolean;
   call: null | string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   channel_id: string;
   codedLinks: string[];
   colorString: undefined | string;
@@ -303,16 +302,11 @@ export interface Message {
   nonce: null | unknown;
   pinned: boolean;
   reactions: Array<{
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     burst_colors: [];
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     burst_count: number;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     burst_me: boolean;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     burst_user_ids: string[];
     count: number;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     count_details: {
       burst: number;
       normal: number;
@@ -322,7 +316,6 @@ export interface Message {
       name: string;
     };
     me: boolean;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     me_burst: boolean;
   }>;
   roleSubscriptionData: undefined | unknown;
@@ -382,7 +375,6 @@ export interface Channel {
       type: number;
     };
   };
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   guild_id: string;
   position_: number;
   rateLimitPerUser_: number;
