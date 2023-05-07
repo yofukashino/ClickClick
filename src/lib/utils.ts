@@ -6,9 +6,10 @@ const { React } = common;
 export const findInTree = (
   tree: object,
   searchFilter: Types.DefaultTypes.AnyFunction | string,
-  searchOptions?: { ignore?: string[]; walkable?: null | string[] },
+  searchOptions?: { ignore?: string[]; walkable?: null | string[]; maxRecrusions?: number },
 ): unknown => {
-  const { walkable = null, ignore = [] } = searchOptions ?? {};
+  const { walkable = null, ignore = [], maxRecrusions = Infinity } = searchOptions ?? {};
+  if (maxRecrusions == 0) return;
   if (typeof searchFilter === "string") {
     if (Object.hasOwnProperty.call(tree, searchFilter)) return tree[searchFilter];
   } else if (searchFilter(tree)) {
@@ -19,14 +20,22 @@ export const findInTree = (
   let tempReturn: unknown;
   if (Array.isArray(tree)) {
     for (const value of tree) {
-      tempReturn = findInTree(value, searchFilter, { walkable, ignore });
+      tempReturn = findInTree(value, searchFilter, {
+        walkable,
+        ignore,
+        maxRecrusions: maxRecrusions - 1,
+      });
       if (typeof tempReturn !== "undefined") return tempReturn;
     }
   } else {
     const toWalk = walkable == null ? Object.keys(tree) : walkable;
     for (const key of toWalk) {
       if (!Object.hasOwnProperty.call(tree, key) || ignore.includes(key)) continue;
-      tempReturn = findInTree(tree[key], searchFilter, { walkable, ignore });
+      tempReturn = findInTree(tree[key], searchFilter, {
+        walkable,
+        ignore,
+        maxRecrusions: maxRecrusions - 1,
+      });
       if (typeof tempReturn !== "undefined") return tempReturn;
     }
   }
@@ -36,8 +45,13 @@ export const findInTree = (
 export const findInReactTree = (
   tree: Types.ReactElement,
   searchFilter: Types.DefaultTypes.AnyFunction | string,
+  searchOptions?: { maxRecrusions?: number },
 ): unknown | Types.ReactElement => {
-  return findInTree(tree, searchFilter, { walkable: ["props", "children", "child", "sibling"] });
+  const { maxRecrusions = Infinity } = searchOptions ?? {};
+  return findInTree(tree, searchFilter, {
+    walkable: ["props", "children", "child", "sibling"],
+    maxRecrusions,
+  });
 };
 
 export const isObject = (testMaterial: unknown): boolean =>

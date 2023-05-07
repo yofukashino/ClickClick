@@ -24,9 +24,9 @@ export const patchMessage = (): void => {
       typeof messageDiv?.onClick !== "function"
     )
       return args;
-    const message = Utils.findInTree(messageDiv, (m) =>
-      Utils.hasProps(m, ["author", "content"]),
-    ) as Types.Message;
+    const message = Utils.findInTree(messageDiv, (m) => Utils.hasProps(m, ["author", "content"]), {
+      maxRecrusions: 100,
+    }) as Types.Message;
     if (!message) return args;
     PluginInjector.instead(
       messageDiv,
