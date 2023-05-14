@@ -1,6 +1,6 @@
 {
   "name": "click-click",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Double-Click someone elses message to quick reply, double click your own to quick edit, and double click while holding a key to copy content.",
   "engines": {
     "node": ">=14.0.0"
@@ -31,7 +31,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.31.10",
     "prettier": "^2.8.1",
-    "replugged": "4.2.6",
+    "replugged": "^4.2.6",
     "typescript": "^4.8.4",
     "lodash": "^4.17.21"
   },

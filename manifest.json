@@ -1,5 +1,5 @@
 {
-  "id": "Tharki.ClickClick",
+  "id": "dev.tharki.ClickClick",
   "name": "ClickClick",
   "description": "Double-Click someone elses message to quick reply, double click your own to quick edit, and double click while holding a key to copy content.",
   "author": {
@@ -7,7 +7,7 @@
     "discordID": "1025214794766221384",
     "github": "Tharki-God"
   },
-  "version": "0.9.4",
+  "version": "0.9.5",
   "updater": {
     "type": "github",
     "id": "Tharki-God/ClickClick"

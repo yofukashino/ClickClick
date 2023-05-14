@@ -6,7 +6,7 @@ export default [
       {
         match:
           /(function \w+)\((\w+)\)({[\s]+var \w+=\w+.message[\s\S]+onSelect:\w+,children:)(\[.+\])}/g,
-        replace: `$1($2)$3$4.filter((i) => replugged.plugins.getExports('Tharki.ClickClick').patchMessageContextMenu(i,$2.message))}`,
+        replace: `$1($2)$3$4.filter((i) => replugged.plugins.getExports('dev.tharki.ClickClick').patchMessageContextMenu(i,$2.message))}`,
       },
     ],
   },
