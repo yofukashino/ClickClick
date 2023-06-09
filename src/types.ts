@@ -1,7 +1,7 @@
 export { types as DefaultTypes } from "replugged";
 import { types as DefaultTypes } from "replugged";
-export { ReactElement, ComponentClass, MouseEvent } from "react";
-import { ReactElement } from "react";
+export type { ReactElement, ComponentClass, MouseEvent } from "react";
+import type { ReactElement } from "react";
 export interface messageDiv {
   "aria-describedby": undefined | string;
   "aria-labelledby": string;
@@ -62,6 +62,9 @@ export interface GenericModule {
 }
 export interface MessageConstructor {
   exports: GenericModule;
+}
+export interface MoreMessageActions {
+  replyToMessage: DefaultTypes.AnyFunction;
 }
 export interface DiscordNative {
   accessibility: {
