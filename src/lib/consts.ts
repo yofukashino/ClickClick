@@ -6,4 +6,5 @@ export const defaultSettings = {
   copy: false,
   copyModifier: "alt",
   hideContextMenuItem: false,
+  controlEdit: true,
 };

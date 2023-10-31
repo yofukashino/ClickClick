@@ -1,20 +1,31 @@
 export { types as DefaultTypes } from "replugged";
 import { types as DefaultTypes } from "replugged";
-export type { ReactElement, ComponentClass, MouseEvent } from "react";
-import type { ReactElement } from "react";
-export interface messageDiv {
+import type { Tree } from "replugged/dist/renderer/util";
+import { Store } from "replugged/dist/renderer/modules/common/flux";
+export type { Message } from "discord-types/general";
+export type { Tree } from "replugged/dist/renderer/util";
+import type { Channel } from "discord-types/general";
+export interface MessageConstructor {
+  ThreadStarterChatMessage: unknown;
+  default: {
+    $$typeof: symbol;
+    compare: null;
+    type: DefaultTypes.AnyFunction;
+  };
+}
+export interface messageDiv extends Tree {
   "aria-describedby": undefined | string;
   "aria-labelledby": string;
   "aria-roledescription": string;
   "aria-setsize": number;
-  childrenAccessories: ReactElement;
-  childrenButtons: ReactElement;
+  childrenAccessories: React.ReactElement;
+  childrenButtons: React.ReactElement;
   childrenExecutedCommand: null;
-  childrenHeader: ReactElement;
+  childrenHeader: React.ReactElement;
   childrenHighlight: null;
-  childrenMessageContent: ReactElement;
-  childrenRepliedMessage: null | ReactElement;
-  childrenSystemMessage: null | ReactElement;
+  childrenMessageContent: React.ReactElement;
+  childrenRepliedMessage: null | React.ReactElement;
+  childrenSystemMessage: null | React.ReactElement;
   className: string;
   compact: boolean;
   "data-list-item-id": string;
@@ -32,37 +43,12 @@ export interface messageDiv {
   tabIndex: number;
   zalgo: boolean;
 }
-export interface MessageClasses {
-  automodMessage: string;
-  backgroundFlash: string;
-  beforeGroup: string;
-  buttons: string;
-  channelTextArea: string;
-  cozyMessage: string;
-  disableInteraction: string;
-  divider: string;
-  ephemeral: string;
-  groupStart: string;
-  hasContent: string;
-  highlightContainer: string;
-  highlightIcon: string;
-  highlighted: string;
-  interactionSending: string;
-  jump: string;
-  mentioned: string;
-  message: string;
-  messageListItem: string;
-  quotedChatMessage: string;
-  replying: string;
-  selected: string;
-  systemMessage: string;
+
+export interface Slate {
+  Slate: DefaultTypes.AnyFunction;
+  Editable: DefaultTypes.AnyFunction;
 }
-export interface GenericModule {
-  [key: string]: DefaultTypes.AnyFunction;
-}
-export interface MessageConstructor {
-  exports: GenericModule;
-}
+
 export interface MoreMessageActions {
   replyToMessage: DefaultTypes.AnyFunction;
 }
@@ -239,97 +225,6 @@ export interface DiscordNative {
     setZoomFactor: DefaultTypes.AnyFunction;
   };
 }
-export interface User {
-  avatar: string;
-  avatarDecoration: undefined | string;
-  bot: boolean;
-  desktop: boolean;
-  discriminator: string;
-  email: null | string;
-  flags: number;
-  guildMemberAvatars: {
-    [key: number]: string;
-  };
-  hasBouncedEmail: boolean;
-  hasFlag: DefaultTypes.AnyFunction;
-  id: string;
-  isStaff: DefaultTypes.AnyFunction;
-  isStaffPersonal: DefaultTypes.AnyFunction;
-  mfaEnabled: boolean;
-  mobile: boolean;
-  nsfwAllowed: undefined | boolean;
-  personalConnectionId: null | string;
-  phone: null | string;
-  premiumType: undefined | number;
-  premiumUsageFlags: number;
-  publicFlags: number;
-  purchasedFlags: number;
-  system: boolean;
-  username: string;
-  verified: boolean;
-  createdAt: Date;
-  tag: string;
-}
-export interface Message {
-  activity: null | string;
-  application: null | object;
-  applicationId: null | string;
-  attachments: object[];
-  author: User;
-  blocked: boolean;
-  bot: boolean;
-  call: null | string;
-  channel_id: string;
-  codedLinks: string[];
-  colorString: undefined | string;
-  components: [];
-  content: string;
-  customRenderedContent: undefined;
-  editedTimestamp: object;
-  embeds: [];
-  flags: number;
-  giftCodes: [];
-  id: string;
-  interaction: null | unknown;
-  interactionData: null | unknown;
-  interactionError: null | unknown;
-  isSearchHit: boolean;
-  loggingName: null | unknown;
-  mentionChannels: [];
-  mentionEveryone: boolean;
-  mentionRoles: [];
-  mentioned: boolean;
-  mentions: [];
-  messageReference: null | unknown;
-  nick: undefined | string;
-  nonce: null | unknown;
-  pinned: boolean;
-  reactions: Array<{
-    burst_colors: [];
-    burst_count: number;
-    burst_me: boolean;
-    burst_user_ids: string[];
-    count: number;
-    count_details: {
-      burst: number;
-      normal: number;
-    };
-    emoji: {
-      id: null | string;
-      name: string;
-    };
-    me: boolean;
-    me_burst: boolean;
-  }>;
-  roleSubscriptionData: undefined | unknown;
-  state: string;
-  stickerItems: unknown[];
-  stickers: unknown[];
-  timestamp: object;
-  tts: boolean;
-  type: number;
-  webhookId: null | string;
-}
 export interface MessageActions {
   clearChannel: DefaultTypes.AnyFunction;
   crosspostMessage: DefaultTypes.AnyFunction;
@@ -360,53 +255,7 @@ export interface MessageActions {
   _sendMessage: DefaultTypes.AnyFunction;
   _tryFetchMessagesCached: DefaultTypes.AnyFunction;
 }
-export interface Channel {
-  defaultAutoArchiveDuration: undefined | number;
-  defaultThreadRateLimitPerUser: undefined | number;
-  flags_: number;
-  id: string;
-  lastMessageId: string;
-  lastPinTimestamp: string;
-  memberListId: undefined | string;
-  name: string;
-  nsfw_: boolean;
-  permissionOverwrites_: {
-    [key: string | number]: {
-      allow: bigint;
-      deny: bigint;
-      id: string;
-      type: number;
-    };
-  };
-  guild_id: string;
-  position_: number;
-  rateLimitPerUser_: number;
-  topic_: string;
-  type: number;
-  version: undefined | number;
-  accessPermissions: bigint;
-  bitrate: number;
-  flags: number;
-  nsfw: boolean;
-  permissionOverwrites: {
-    [key: string | number]: {
-      allow: bigint;
-      deny: bigint;
-      id: string;
-      type: number;
-    };
-  };
-  position: number;
-  rateLimitPerUser: number;
-  topic: undefined | string;
-  userLimit: number;
-  availableTags: Array<{
-    name: string;
-  }>;
-  isHidden: () => boolean;
-  isGuildVocal: () => boolean;
-}
-export interface ChannelStore {
+export interface ChannelStore extends Store {
   getAllThreadsForParent: DefaultTypes.AnyFunction;
   getBasicChannel: DefaultTypes.AnyFunction;
   getCachedChannelJsonForGuild: DefaultTypes.AnyFunction;
@@ -425,6 +274,14 @@ export interface ChannelStore {
   initialize: DefaultTypes.AnyFunction;
   loadAllGuildAndPrivateChannelsFromDisk: DefaultTypes.AnyFunction;
 }
+export interface EditMessageStore extends Store {
+  getEditingMessage: DefaultTypes.AnyFunction;
+  getEditingMessageId: DefaultTypes.AnyFunction;
+  getEditingRichValue: DefaultTypes.AnyFunction;
+  getEditingTextValue: DefaultTypes.AnyFunction;
+  isEditing: DefaultTypes.AnyFunction;
+  isEditingAny: DefaultTypes.AnyFunction;
+}
 export interface Settings {
   edit: boolean;
   editModifier: string;
@@ -434,3 +291,5 @@ export interface Settings {
   copyModifier: string;
   hideContextMenuItem: boolean;
 }
+
+export * as default from "./types";

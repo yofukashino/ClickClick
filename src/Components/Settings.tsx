@@ -1,8 +1,8 @@
 import { components, util } from "replugged";
 import { PluginLogger, SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
-import * as Utils from "../lib/utils";
-import * as Types from "../types";
+import Utils from "../lib/utils";
+import Types from "../types";
 const { Category, SwitchItem, RadioItem } = components;
 export const registerSettings = (): void => {
   for (const key in defaultSettings) {
@@ -83,6 +83,13 @@ export const Settings = () => {
           Copy Modifier
         </RadioItem>
       </Category>
+      <SwitchItem
+        {...{
+          note: "Nagivate message edits even better with CTRL+ArrowUp or CTRL+ArrowDown.",
+          ...util.useSetting(SettingValues, "controlEdit", defaultSettings.controlEdit),
+        }}>
+        Better Edit Navigation
+      </SwitchItem>
       <SwitchItem
         {...{
           note: "Hide reply and edit from options from message context menu. The reply option will still be shown on your own messages.",
