@@ -21,7 +21,9 @@ export default (): void => {
             (c) => c.author.id === UltimateUserStore.getCurrentUser().id,
           );
           const MessageToEdit = UserMessages.at(
-            (EditingMessageId ? UserMessages.findIndex((c) => c.id === EditingMessageId) : 0) - 1,
+            (EditingMessageId
+              ? UserMessages.findIndex((c) => c.id === EditingMessageId) || NaN
+              : 0) - 1,
           );
           if (MessageToEdit)
             MessageActions.startEditMessage(
