@@ -2,17 +2,17 @@
   "id": "dev.tharki.ClickClick",
   "name": "ClickClick",
   "description": "Double-Click someone elses message to quick reply, double click your own to quick edit, and double click while holding a key to copy content.",
-  "image": "https://tharki-god.github.io/files-random-host/bdpluginsassets/clickclick.gif",
-  "source": "https://github.com/Tharki-God/ClickClick",
+  "image": "https://i.imgur.com/UyjROhy.gif",
+  "source": "https://github.com/TharkiDev/ClickClick",
   "author": {
     "name": "Ahlawat",
     "discordID": "1025214794766221384",
-    "github": "Tharki-God"
+    "github": "TharkiDev"
   },
   "version": "1.0.1",
   "updater": {
     "type": "github",
-    "id": "Tharki-God/ClickClick"
+    "id": "TharkiDev/ClickClick"
   },
   "license": "MIT",
   "type": "replugged-plugin",
