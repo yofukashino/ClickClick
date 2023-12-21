@@ -33,8 +33,8 @@
     "eslint-plugin-react": "^7.32.2",
     "lodash": "^4.17.21",
     "prettier": "^2.8.8",
-    "replugged": "^4.7.4",
-    "typescript": "^4.9.5"
+    "replugged": "^4.7.7",
+    "typescript": "^5.0.0"
   },
   "dependencies": {
     "discord-types": "^1.3.3"
