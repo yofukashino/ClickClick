@@ -1,6 +1,6 @@
-import { Category, SwitchItem, RadioItem } from "replugged/components";
+import { Category, FormNotice, RadioItem, SwitchItem } from "replugged/components";
 import { PluginLogger, SettingValues } from "../index";
-import { defaultSettings } from "../lib/consts";
+import { defaultSettings, modifierStates } from "../lib/consts";
 import Utils from "../lib/utils";
 import Types from "../types";
 export const registerSettings = (): void => {
@@ -23,12 +23,7 @@ export const Settings = () => {
         <RadioItem
           disabled={!SettingValues.get("edit", defaultSettings.edit)}
           note="Modifier for double clicking to edit"
-          options={[
-            { name: "Shift", value: "shift" },
-            { name: "Ctrl", value: "ctrl" },
-            { name: "Alt", value: "alt" },
-            { name: "None", value: "none" },
-          ]}
+          options={[...modifierStates, { name: "None", value: "none" }]}
           {...Utils.useSetting(SettingValues, "editModifier", defaultSettings.editModifier)}>
           Edit Modifier
         </RadioItem>
@@ -42,12 +37,7 @@ export const Settings = () => {
         <RadioItem
           disabled={!SettingValues.get("reply", defaultSettings.reply)}
           note="Modifier for double clicking to reply."
-          options={[
-            { name: "Shift", value: "shift" },
-            { name: "Ctrl", value: "ctrl" },
-            { name: "Alt", value: "alt" },
-            { name: "None", value: "none" },
-          ]}
+          options={[...modifierStates, { name: "None", value: "none" }]}
           {...Utils.useSetting(SettingValues, "replyModifier", defaultSettings.replyModifier)}>
           Edit Modifier
         </RadioItem>
@@ -61,20 +51,60 @@ export const Settings = () => {
         <RadioItem
           disabled={!SettingValues.get("copy", defaultSettings.copy)}
           note="Modifier for double clicking to copying."
-          options={[
-            { name: "Shift", value: "shift" },
-            { name: "Ctrl", value: "ctrl" },
-            { name: "Alt", value: "alt" },
-          ]}
+          options={modifierStates}
           {...Utils.useSetting(SettingValues, "copyModifier", defaultSettings.copyModifier)}>
           Copy Modifier
         </RadioItem>
       </Category>
-      <SwitchItem
-        note="Navigate message edits even better with CTRL+ArrowUp or CTRL+ArrowDown."
-        {...Utils.useSetting(SettingValues, "controlEdit", defaultSettings.controlEdit)}>
-        Better Edit Navigation
-      </SwitchItem>
+      <Category title="Better Navigation" open={false}>
+        <SwitchItem
+          note="Navigate message edits even better with Modifier+ArrowUp or Modifier+ArrowDown."
+          {...Utils.useSetting(SettingValues, "editNagivation", defaultSettings.editNagivation)}>
+          Enable Better Edit Navigation
+        </SwitchItem>
+        <RadioItem
+          disabled={!SettingValues.get("editNagivation", defaultSettings.editNagivation)}
+          note="Modifier for using arrow keys to edit."
+          options={modifierStates}
+          {...Utils.useSetting(
+            SettingValues,
+            "editNagivationModifier",
+            defaultSettings.editNagivationModifier,
+          )}>
+          Better Edit Nagivation Modifier
+        </RadioItem>
+        <SwitchItem
+          note="Navigate message edits even better with Modifier+ArrowUp or Modifier+ArrowDown."
+          {...Utils.useSetting(SettingValues, "replyNagivation", defaultSettings.replyNagivation)}>
+          Enable Better Reply Navigation
+        </SwitchItem>
+        <RadioItem
+          disabled={!SettingValues.get("replyNagivation", defaultSettings.replyNagivation)}
+          note="Modifier for using arrow keys to reply."
+          options={modifierStates}
+          {...Utils.useSetting(
+            SettingValues,
+            "replyNagivationModifier",
+            defaultSettings.replyNagivationModifier,
+          )}>
+          Better Reply Nagivation Modifier
+        </RadioItem>
+        {SettingValues.get("editNagivationModifier", defaultSettings.editNagivationModifier) ===
+          SettingValues.get("replyNagivationModifier", defaultSettings.replyNagivationModifier) &&
+          SettingValues.get("editNagivation", defaultSettings.editNagivation) ===
+            SettingValues.get("replyNagivation", defaultSettings.replyNagivation) && (
+            <FormNotice
+              title="Same Modifier"
+              body="Selecting same modifier for both reply and edit would result in error and unexpected behaviour."
+              type={FormNotice.Types.DANGER}
+            />
+          )}
+        <FormNotice
+          title="Override"
+          body="This will override any default discord keybinds if any."
+          type={FormNotice.Types.WARNING}
+        />
+      </Category>
       <SwitchItem
         note="Hide reply and edit from options from message context menu. The reply option will still be shown on your own messages."
         {...Utils.useSetting(

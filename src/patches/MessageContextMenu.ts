@@ -1,7 +1,7 @@
 import { users as UltimateUserStore } from "replugged/common";
 import { PluginInjectorUtils, SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
-import * as Types from "../types";
+import Types from "../types";
 export default (): void => {
   PluginInjectorUtils.addMenuItem(
     Types.DefaultTypes.ContextMenuTypes.Message,

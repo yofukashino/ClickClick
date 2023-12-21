@@ -4,7 +4,7 @@ import type { Tree } from "replugged/dist/renderer/util";
 import { Store } from "replugged/dist/renderer/modules/common/flux";
 export type { Message } from "discord-types/general";
 export type { Tree } from "replugged/dist/renderer/util";
-import type { Channel } from "discord-types/general";
+import type { Channel, Message } from "discord-types/general";
 export interface MessageConstructor {
   ThreadStarterChatMessage: unknown;
   default: {
@@ -50,7 +50,9 @@ export interface Slate {
 }
 
 export interface MoreMessageActions {
-  replyToMessage: DefaultTypes.AnyFunction;
+  createPendingReply: DefaultTypes.AnyFunction;
+  deletePendingReply: DefaultTypes.AnyFunction;
+  setPendingReplyShouldMention: DefaultTypes.AnyFunction;
 }
 export interface DiscordNative {
   accessibility: {
@@ -282,6 +284,19 @@ export interface EditMessageStore extends Store {
   isEditing: DefaultTypes.AnyFunction;
   isEditingAny: DefaultTypes.AnyFunction;
 }
+
+export interface PendingReplyStore extends Store {
+  getPendingReply: (e: string) =>
+    | {
+        channel: Channel;
+        message: Message;
+        shouldMention: boolean;
+        showMentionToggle: boolean;
+      }
+    | undefined;
+  getPendingReplyActionSource: DefaultTypes.AnyFunction;
+}
+
 export interface Settings {
   edit: boolean;
   editModifier: string;

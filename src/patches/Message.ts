@@ -9,7 +9,7 @@ import {
 } from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";
-import * as Types from "../types";
+import Types from "../types";
 export default (): void => {
   PluginInjector.after(
     MessageConstructor.default,
@@ -46,11 +46,12 @@ export default (): void => {
             clickEvent,
           )
         )
-          MoreMessageActions.replyToMessage(
-            ChannelStore.getChannel(message.channel_id),
+          MoreMessageActions.createPendingReply({
+            channel: ChannelStore.getChannel(message.channel_id),
             message,
-            clickEvent,
-          );
+            shouldMention: true,
+            showMentionToggle: !ChannelStore.getChannel(message.channel_id).isPrivate(),
+          });
       };
       return res;
     },
