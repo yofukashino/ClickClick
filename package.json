@@ -1,6 +1,6 @@
 {
   "name": "click-click",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Double-Click someone elses message to quick reply, double click your own to quick edit, and double click while holding a key to copy content.",
   "engines": {
     "node": ">=14.0.0"
