@@ -5,10 +5,10 @@ export const SettingValues = await settings.init("dev.tharki.ClickClick", defaul
 export const PluginInjector = new Injector();
 export const { utils: PluginInjectorUtils } = PluginInjector;
 import { registerSettings } from "./Components/Settings";
-import Injections from "./patches/index";
+import Injections from "./injections/index";
 export const start = (): void => {
   registerSettings();
-  Injections.applyInjections();
+  void Injections.applyInjections();
 };
 
 export const stop = (): void => {
