@@ -5,7 +5,6 @@ export const defaultSettings = {
   replyModifier: "none",
   copy: false,
   copyModifier: "alt",
-
   editNagivation: true,
   editNagivationModifier: "ctrl",
   replyNagivation: true,

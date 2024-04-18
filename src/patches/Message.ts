@@ -1,16 +1,11 @@
 import { users as UltimateUserStore } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
-import {
-  ChannelStore,
-  DiscordNative,
-  MessageActions,
-  MessageConstructor,
-  MoreMessageActions,
-} from "../lib/requiredModules";
+import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";
 import Types from "../types";
 export default (): void => {
+  const { ChannelStore, MessageActions, MessageConstructor, MoreMessageActions } = Modules;
   PluginInjector.after(
     MessageConstructor.default,
     "type",
@@ -20,7 +15,7 @@ export default (): void => {
         (m) =>
           Object.hasOwnProperty.call(m, "onClick") &&
           Object.hasOwnProperty.call(m, "onContextMenu"),
-      ) as Types.messageDiv;
+      ) as Types.MessageDiv;
       messageDiv.onDoubleClick = (clickEvent) => {
         if (
           Utils.checkForModifier(

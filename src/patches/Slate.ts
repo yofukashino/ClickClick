@@ -4,18 +4,19 @@ import {
   users as UltimateUserStore,
 } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
-import {
-  ChannelStore,
-  EditMessageStore,
-  MessageActions,
-  MoreMessageActions,
-  PendingReplyStore,
-  Slate,
-} from "../lib/requiredModules";
+import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";
 const Pressed = new Map<string, boolean>();
 export default (): void => {
+  const {
+    ChannelStore,
+    EditMessageStore,
+    MessageActions,
+    MoreMessageActions,
+    PendingReplyStore,
+    Slate,
+  } = Modules;
   PluginInjector.before(Slate, "Editable", (args) => {
     if (
       (SettingValues.get("editNagivation", defaultSettings.editNagivation) ||
