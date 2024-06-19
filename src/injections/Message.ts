@@ -1,3 +1,4 @@
+import { webpack } from "replugged";
 import { users as UltimateUserStore } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
 import Modules from "../lib/requiredModules";
@@ -6,8 +7,9 @@ import Utils from "../lib/utils";
 import Types from "../types";
 export default (): void => {
   const { ChannelStore, MessageActions, MessageConstructor, MoreMessageActions } = Modules;
+  const Memo = webpack.getExportsForProps<Types.GenericMemo>(MessageConstructor, ["type"]);
   PluginInjector.after(
-    MessageConstructor.default,
+    Memo,
     "type",
     ([{ message }]: [{ message: Types.Message }], res: Types.Tree) => {
       const messageDiv = Utils.findInReactTree(

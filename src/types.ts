@@ -9,13 +9,10 @@ export namespace Types {
   export type Tree = util.Tree;
   export type Channel = GeneralDiscordTypes.Channel;
   export type Message = GeneralDiscordTypes.Message;
-  export interface MessageConstructor {
-    ThreadStarterChatMessage: unknown;
-    default: {
-      $$typeof: symbol;
-      compare: null;
-      type: DefaultTypes.AnyFunction;
-    };
+  export interface GenericMemo {
+    $$typeof: symbol;
+    compare: DefaultTypes.AnyFunction;
+    type: DefaultTypes.AnyFunction;
   }
   export interface MessageDiv extends Tree {
     "aria-describedby": undefined | string;
@@ -58,16 +55,6 @@ export namespace Types {
     createPendingReply: DefaultTypes.AnyFunction;
     deletePendingReply: DefaultTypes.AnyFunction;
     setPendingReplyShouldMention: DefaultTypes.AnyFunction;
-  }
-  export interface Modules {
-    loadModules?: () => Promise<void>;
-    ChannelStore?: ChannelStore;
-    EditMessageStore?: EditMessageStore;
-    PendingReplyStore?: PendingReplyStore;
-    MessageConstructor?: MessageConstructor;
-    MessageActions?: MessageActions;
-    Slate?: Slate;
-    MoreMessageActions?: MoreMessageActions;
   }
 
   export interface MessageActions {
@@ -138,6 +125,18 @@ export namespace Types {
         }
       | undefined;
     getPendingReplyActionSource: DefaultTypes.AnyFunction;
+  }
+
+  export interface Modules {
+    loadModules?: () => Promise<void>;
+    ChannelStore?: ChannelStore;
+    EditMessageStore?: EditMessageStore;
+    PendingReplyStore?: PendingReplyStore;
+    MessageConstructor?: GenericModule;
+    MessageActions?: MessageActions;
+    Slate?: GenericModule;
+    MoreMessageActionsModule?: GenericModule;
+    MoreMessageActions?: MoreMessageActions;
   }
 
   export interface Settings {

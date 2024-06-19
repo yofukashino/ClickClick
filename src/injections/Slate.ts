@@ -1,3 +1,4 @@
+import { webpack } from "replugged";
 import {
   channels as UltimateChannelStore,
   messages as UltimateMessageStore,
@@ -17,7 +18,8 @@ export default (): void => {
     PendingReplyStore,
     Slate,
   } = Modules;
-  PluginInjector.before(Slate, "Editable", (args) => {
+  const Editable = webpack.getFunctionKeyBySource(Slate, "isDraggingInternally");
+  PluginInjector.before(Slate, Editable, (args) => {
     if (
       (SettingValues.get("editNagivation", defaultSettings.editNagivation) ||
         SettingValues.get("replyNagivation", defaultSettings.replyNagivation)) &&

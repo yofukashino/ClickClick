@@ -8,7 +8,7 @@ import { registerSettings } from "./Components/Settings";
 import Injections from "./injections/index";
 export const start = (): void => {
   registerSettings();
-  void Injections.applyInjections();
+  void Injections.applyInjections().catch((err) => PluginLogger.error(err));
 };
 
 export const stop = (): void => {
