@@ -15,9 +15,11 @@ export default (): void => {
       const messageDiv = Utils.findInReactTree(
         res,
         (m) =>
+          m &&
           Object.hasOwnProperty.call(m, "onClick") &&
           Object.hasOwnProperty.call(m, "onContextMenu"),
       ) as Types.MessageDiv;
+      if (!messageDiv) return res;
       messageDiv.onDoubleClick = (clickEvent) => {
         if (
           Utils.checkForModifier(
