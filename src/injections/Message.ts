@@ -25,8 +25,11 @@ export default (): void => {
             SettingValues.get("copyModifier", defaultSettings.copyModifier),
             clickEvent,
           )
-        )
+        ) {
+          clickEvent.preventDefault();
+          clickEvent.stopPropagation();
           DiscordNative.clipboard.copy(message.content);
+        }
         if (
           Utils.checkForModifier(
             SettingValues.get("edit", defaultSettings.edit),
@@ -34,21 +37,27 @@ export default (): void => {
             clickEvent,
           ) &&
           message?.author?.id == UltimateUserStore.getCurrentUser()?.id
-        )
+        ) {
+          clickEvent.preventDefault();
+          clickEvent.stopPropagation();
           return MessageActions.startEditMessage(message.channel_id, message.id, message.content);
+        }
         if (
           Utils.checkForModifier(
             SettingValues.get("reply", defaultSettings.reply),
             SettingValues.get("replyModifier", defaultSettings.replyModifier),
             clickEvent,
           )
-        )
+        ) {
+          clickEvent.preventDefault();
+          clickEvent.stopPropagation();
           MoreMessageActions.createPendingReply({
             channel: ChannelStore.getChannel(message.channel_id),
             message,
             shouldMention: true,
             showMentionToggle: !ChannelStore.getChannel(message.channel_id).isPrivate(),
           });
+        }
       };
       return res;
     },

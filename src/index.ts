@@ -1,6 +1,6 @@
 import { Injector, Logger, settings } from "replugged";
 import { defaultSettings } from "./lib/consts";
-export const PluginLogger = Logger.plugin("ClickClick");
+export const PluginLogger = Logger.plugin("ClickClick", "#b380ff");
 export const SettingValues = await settings.init("dev.tharki.ClickClick", defaultSettings);
 export const PluginInjector = new Injector();
 export const { utils: PluginInjectorUtils } = PluginInjector;

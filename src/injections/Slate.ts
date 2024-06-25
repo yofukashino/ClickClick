@@ -58,7 +58,7 @@ export default (): void => {
           !Pressed.get("ArrowUp")
         ) {
           Pressed.set("ArrowUp", true);
-          const CurrentChannelId = UltimateChannelStore.getCurrentlySelectedChannelId();
+          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId);
           const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
           const UserMessages = Messages.toArray().filter(
@@ -87,7 +87,7 @@ export default (): void => {
           !Pressed.get("ArrowUp")
         ) {
           Pressed.set("ArrowUp", true);
-          const CurrentChannelId = UltimateChannelStore.getCurrentlySelectedChannelId();
+          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray();
           const ReplyingMessageId = PendingReplyStore.getPendingReply(CurrentChannelId)?.message.id;
           const MessageToReply = Messages.at(
@@ -118,7 +118,7 @@ export default (): void => {
           !Pressed.get("ArrowDown")
         ) {
           Pressed.set("ArrowDown", true);
-          const CurrentChannelId = UltimateChannelStore.getCurrentlySelectedChannelId();
+          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId);
           const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
           const UserMessages = Messages.toArray()
@@ -146,7 +146,7 @@ export default (): void => {
           !Pressed.get("ArrowDown")
         ) {
           Pressed.set("ArrowDown", true);
-          const CurrentChannelId = UltimateChannelStore.getCurrentlySelectedChannelId();
+          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray().reverse();
           const ReplyingMessageId = PendingReplyStore.getPendingReply(CurrentChannelId)?.message.id;
           const MessageToReply =
