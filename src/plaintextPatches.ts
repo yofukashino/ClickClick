@@ -4,7 +4,7 @@ export default [
     find: "renderLeaf:this.renderLeaf",
     replacements: [
       {
-        match: /renderLeaf\:this\.renderLeaf/,
+        match: /renderLeaf:this\.renderLeaf/,
         replace: (prefix) => `${prefix},channelId:this.props.channelId`,
       },
     ],

@@ -1,9 +1,5 @@
 import { webpack } from "replugged";
-import {
-  channels as UltimateChannelStore,
-  messages as UltimateMessageStore,
-  users as UltimateUserStore,
-} from "replugged/common";
+import { messages as UltimateMessageStore, users as UltimateUserStore } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
 import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
