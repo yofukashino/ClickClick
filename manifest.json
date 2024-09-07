@@ -3,16 +3,16 @@
   "name": "ClickClick",
   "description": "Double-Click someone elses message to quick reply, double click your own to quick edit, and double click while holding a key to copy content.",
   "image": "https://i.imgur.com/UyjROhy.gif",
-  "source": "https://github.com/YofukashiNo/ClickClick",
+  "source": "https://github.com/yofukashino/ClickClick",
   "author": {
     "name": "Nanakusa",
     "discordID": "1121961711080050780",
-    "github": "YofukashiNo"
+    "github": "yofukashino"
   },
   "version": "1.1.0",
   "updater": {
     "type": "github",
-    "id": "YofukashiNo/ClickClick"
+    "id": "yofukashino/ClickClick"
   },
   "license": "MIT",
   "type": "replugged-plugin",

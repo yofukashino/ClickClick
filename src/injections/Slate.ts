@@ -1,4 +1,4 @@
-import { webpack } from "replugged";
+import { webpack, plugins } from "replugged";
 import { messages as UltimateMessageStore, users as UltimateUserStore } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
 import Modules from "../lib/requiredModules";
@@ -94,7 +94,10 @@ export default (): void => {
             MoreMessageActions.createPendingReply({
               channel: ChannelStore.getChannel(MessageToReply.channel_id),
               message: MessageToReply,
-              shouldMention: true,
+              shouldMention: !(
+                plugins.plugins.has("me.puyodead1.NoReplyMention") &&
+                plugins.getDisabled().includes("me.puyodead1.NoReplyMention")
+              ),
               showMentionToggle: !ChannelStore.getChannel(MessageToReply.channel_id).isPrivate(),
             });
             MessageActions.jumpToMessage({

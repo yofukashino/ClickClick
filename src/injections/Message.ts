@@ -6,7 +6,14 @@ import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";
 import Types from "../types";
 export default (): void => {
-  const { ChannelStore, MessageActions, MessageConstructor, MoreMessageActions } = Modules;
+  const {
+    ChannelStore,
+    EditMessageStore,
+    MessageActions,
+    MessageConstructor,
+    MoreMessageActions,
+    PendingReplyStore,
+  } = Modules;
   const Memo = webpack.getExportsForProps<Types.GenericMemo>(MessageConstructor, ["type"]);
   PluginInjector.after(
     Memo,
@@ -32,6 +39,11 @@ export default (): void => {
           clickEvent.stopPropagation();
           DiscordNative.clipboard.copy(message.content);
         }
+        if (
+          EditMessageStore.getEditingMessageId(message.channel_id) == message.id ||
+          PendingReplyStore.getPendingReply(message.channel_id)?.message.id == message.id
+        )
+          return;
         if (
           Utils.checkForModifier(
             SettingValues.get("edit", defaultSettings.edit),
