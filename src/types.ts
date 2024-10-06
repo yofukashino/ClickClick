@@ -127,11 +127,31 @@ export namespace Types {
     getPendingReplyActionSource: DefaultTypes.AnyFunction;
   }
 
+  export interface PermissionStore extends Store {
+    can: DefaultTypes.AnyFunction;
+    canAccessGuildSettings: DefaultTypes.AnyFunction;
+    canAccessMemberSafetyPage: DefaultTypes.AnyFunction;
+    canBasicChannel: DefaultTypes.AnyFunction;
+    canImpersonateRole: DefaultTypes.AnyFunction;
+    canManageUser: DefaultTypes.AnyFunction;
+    canWithPartialContext: DefaultTypes.AnyFunction;
+    computeBasicPermissions: DefaultTypes.AnyFunction;
+    computePermissions: DefaultTypes.AnyFunction;
+    getChannelPermissions: DefaultTypes.AnyFunction;
+    getChannelsVersion: DefaultTypes.AnyFunction;
+    getGuildPermissionProps: DefaultTypes.AnyFunction;
+    getGuildPermissions: DefaultTypes.AnyFunction;
+    getGuildVersion: DefaultTypes.AnyFunction;
+    getHighestRole: DefaultTypes.AnyFunction;
+    isRoleHigher: DefaultTypes.AnyFunction;
+  }
+
   export interface Modules {
     loadModules?: () => Promise<void>;
     ChannelStore?: ChannelStore;
     EditMessageStore?: EditMessageStore;
     PendingReplyStore?: PendingReplyStore;
+    PermissionStore?: PermissionStore;
     MessageConstructor?: GenericModule;
     MessageActions?: MessageActions;
     Slate?: GenericModule;

@@ -1,5 +1,9 @@
-import { webpack, plugins } from "replugged";
-import { messages as UltimateMessageStore, users as UltimateUserStore } from "replugged/common";
+import { plugins, webpack } from "replugged";
+import {
+  constants as DiscordConstants,
+  messages as UltimateMessageStore,
+  users as UltimateUserStore,
+} from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
 import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
@@ -17,6 +21,10 @@ export default (): void => {
   const Editable = webpack.getFunctionKeyBySource(Slate, "isDraggingInternally");
   PluginInjector.before(Slate, Editable, (args) => {
     if (
+      Modules.PermissionStore.can(
+        DiscordConstants.Permissions.VIEW_CHANNEL,
+        ChannelStore.getChannel(args[0].channelId),
+      ) &&
       (SettingValues.get("editNagivation", defaultSettings.editNagivation) ||
         SettingValues.get("replyNagivation", defaultSettings.replyNagivation)) &&
       !(

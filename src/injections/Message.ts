@@ -1,5 +1,5 @@
 import { webpack } from "replugged";
-import { users as UltimateUserStore } from "replugged/common";
+import { constants as DiscordConstants, users as UltimateUserStore } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
 import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
@@ -18,7 +18,12 @@ export default (): void => {
   PluginInjector.after(
     Memo,
     "type",
-    ([{ message }]: [{ message: Types.Message }], res: Types.Tree) => {
+    (
+      [{ message, channel }]: [{ message: Types.Message; channel: Types.Channel }],
+      res: Types.Tree,
+    ) => {
+      if (!Modules.PermissionStore.can(DiscordConstants.Permissions.SEND_MESSAGES, channel))
+        return res;
       const messageDiv = Utils.findInReactTree(
         res,
         (m) =>

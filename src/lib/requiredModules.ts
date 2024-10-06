@@ -7,7 +7,7 @@ Modules.loadModules = async () => {
   Modules.EditMessageStore ??= webpack.getByStoreName<Types.EditMessageStore>("EditMessageStore");
   Modules.PendingReplyStore ??=
     webpack.getByStoreName<Types.PendingReplyStore>("PendingReplyStore");
-
+  Modules.PermissionStore ??= webpack.getByStoreName<Types.PermissionStore>("PermissionStore");
   Modules.MessageConstructor ??= await webpack
     .waitForModule<Types.GenericModule>(webpack.filters.bySource(".backgroundFlash]"), {
       timeout: 10000,
