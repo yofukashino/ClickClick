@@ -22,7 +22,10 @@ export default (): void => {
       [{ message, channel }]: [{ message: Types.Message; channel: Types.Channel }],
       res: Types.Tree,
     ) => {
-      if (!Modules.PermissionStore.can(DiscordConstants.Permissions.SEND_MESSAGES, channel))
+      if (
+        !Modules.PermissionStore.can(DiscordConstants.Permissions.SEND_MESSAGES, channel) &&
+        !channel.isPrivate()
+      )
         return res;
       const messageDiv = Utils.findInReactTree(
         res,
