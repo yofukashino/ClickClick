@@ -21,11 +21,12 @@ export default (): void => {
   const Editable = webpack.getFunctionKeyBySource(Slate, "isDraggingInternally");
   PluginInjector.before(Slate, Editable, (args) => {
     if (
+      args[0].channelId &&
       (Modules.PermissionStore.can(
         DiscordConstants.Permissions.VIEW_CHANNEL,
         ChannelStore.getChannel(args[0].channelId),
       ) ||
-        ChannelStore.getChannel(args[0].channelId).isPrivate()) &&
+        ChannelStore.getChannel(args[0].channelId)?.isPrivate?.()) &&
       (SettingValues.get("editNagivation", defaultSettings.editNagivation) ||
         SettingValues.get("replyNagivation", defaultSettings.replyNagivation)) &&
       !(
