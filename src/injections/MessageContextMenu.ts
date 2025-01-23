@@ -6,7 +6,7 @@ export default (): void => {
   PluginInjectorUtils.addMenuItem(
     Types.DefaultTypes.ContextMenuTypes.Message,
     ({ message }: { message: Types.Message }, menu) => {
-      menu.children = (menu.children as React.ReactElement[]).filter((value) => {
+      menu.children = (menu.children as React.ReactElement[]).flat(10).filter((value) => {
         if (!SettingValues.get("hideContextMenuItem", defaultSettings.hideContextMenuItem))
           return true;
         if (!value?.props?.children) return false;
