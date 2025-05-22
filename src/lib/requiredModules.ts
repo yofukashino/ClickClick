@@ -9,9 +9,11 @@ Modules.loadModules = async () => {
     webpack.getByStoreName<Types.PendingReplyStore>("PendingReplyStore");
   Modules.PermissionStore ??= webpack.getByStoreName<Types.PermissionStore>("PermissionStore");
   Modules.MessageConstructor ??= await webpack
-    .waitForModule<Types.GenericModule>(webpack.filters.bySource(".backgroundFlash]"), {
+    .waitForModule<{ exports: Types.GenericModule }>(webpack.filters.bySource("BaseMessage"), {
       timeout: 10000,
+      raw: true,
     })
+    .then(({ exports }) => exports)
     .catch(() => {
       throw new Error("Failed To Find MessageConstructor Module");
     });

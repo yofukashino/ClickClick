@@ -14,74 +14,65 @@ export default (): void => {
     MoreMessageActions,
     PendingReplyStore,
   } = Modules;
-  const Memo = webpack.getExportsForProps<Types.GenericMemo>(MessageConstructor, ["type"]);
-  PluginInjector.after(
-    Memo,
-    "type",
-    (
-      [{ message, channel }]: [{ message: Types.Message; channel: Types.Channel }],
-      res: Types.Tree,
-    ) => {
+  const BaseMessage = webpack.getFunctionKeyBySource(MessageConstructor, "zalgo");
+  PluginInjector.before(MessageConstructor, BaseMessage, ([props, ...args]) => {
+    const message: Types.Message = props.childrenMessageContent?.props.message;
+    const channel: Types.Channel = ChannelStore.getChannel(message?.channel_id);
+
+    if (
+      !message ||
+      !channel ||
+      (!Modules.PermissionStore.can(DiscordConstants.Permissions.SEND_MESSAGES, channel) &&
+        !channel?.isPrivate?.())
+    )
+      return [props, ...args];
+
+    props.onDoubleClick = (clickEvent) => {
       if (
-        !Modules.PermissionStore.can(DiscordConstants.Permissions.SEND_MESSAGES, channel) &&
-        !channel?.isPrivate?.()
-      )
-        return res;
-      const messageDiv = Utils.findInReactTree(
-        res,
-        (m) =>
-          m &&
-          Object.hasOwnProperty.call(m, "onClick") &&
-          Object.hasOwnProperty.call(m, "onContextMenu"),
-      ) as Types.MessageDiv;
-      if (!messageDiv) return res;
-      messageDiv.onDoubleClick = (clickEvent) => {
-        if (
-          Utils.checkForModifier(
-            SettingValues.get("copy", defaultSettings.copy),
-            SettingValues.get("copyModifier", defaultSettings.copyModifier),
-            clickEvent,
-          )
-        ) {
-          clickEvent.preventDefault();
-          clickEvent.stopPropagation();
-          DiscordNative.clipboard.copy(message.content);
-        }
-        if (
-          EditMessageStore.getEditingMessageId(message.channel_id) == message.id ||
-          PendingReplyStore.getPendingReply(message.channel_id)?.message.id == message.id
+        Utils.checkForModifier(
+          SettingValues.get("copy", defaultSettings.copy),
+          SettingValues.get("copyModifier", defaultSettings.copyModifier),
+          clickEvent,
         )
-          return;
-        if (
-          Utils.checkForModifier(
-            SettingValues.get("edit", defaultSettings.edit),
-            SettingValues.get("editModifier", defaultSettings.editModifier),
-            clickEvent,
-          ) &&
-          message?.author?.id == UltimateUserStore.getCurrentUser()?.id
-        ) {
-          clickEvent.preventDefault();
-          clickEvent.stopPropagation();
-          return MessageActions.startEditMessage(message.channel_id, message.id, message.content);
-        }
-        if (
-          Utils.checkForModifier(
-            SettingValues.get("reply", defaultSettings.reply),
-            SettingValues.get("replyModifier", defaultSettings.replyModifier),
-            clickEvent,
-          )
-        ) {
-          clickEvent.preventDefault();
-          clickEvent.stopPropagation();
-          MoreMessageActions.createPendingReply({
-            channel: ChannelStore.getChannel(message.channel_id),
-            message,
-            shouldMention: true,
-            showMentionToggle: !ChannelStore.getChannel(message.channel_id).isPrivate(),
-          });
-        }
-      };
-      return res;
-    },
-  );
+      ) {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+        DiscordNative.clipboard.copy(message.content);
+      }
+      if (
+        EditMessageStore.getEditingMessageId(message.channel_id) == message.id ||
+        PendingReplyStore.getPendingReply(message.channel_id)?.message.id == message.id
+      )
+        return;
+      if (
+        Utils.checkForModifier(
+          SettingValues.get("edit", defaultSettings.edit),
+          SettingValues.get("editModifier", defaultSettings.editModifier),
+          clickEvent,
+        ) &&
+        message?.author?.id == UltimateUserStore.getCurrentUser()?.id
+      ) {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+        return MessageActions.startEditMessage(message.channel_id, message.id, message.content);
+      }
+      if (
+        Utils.checkForModifier(
+          SettingValues.get("reply", defaultSettings.reply),
+          SettingValues.get("replyModifier", defaultSettings.replyModifier),
+          clickEvent,
+        )
+      ) {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+        MoreMessageActions.createPendingReply({
+          channel,
+          message,
+          shouldMention: true,
+          showMentionToggle: !channel.isPrivate(),
+        });
+      }
+    };
+    return [props, ...args];
+  });
 };
