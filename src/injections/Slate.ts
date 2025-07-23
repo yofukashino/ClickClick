@@ -9,6 +9,7 @@ import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";
 const PatchedCC = Symbol("ClickClick");
+
 export default (): void => {
   const {
     ChannelStore,
@@ -20,7 +21,7 @@ export default (): void => {
   } = Modules;
   const Editable = webpack.getFunctionKeyBySource(Slate, "isDraggingInternally");
   PluginInjector.before(Slate, Editable, (args) => {
-    const CurrentChannelId = args[0].channelId;
+    const [{ channelId: CurrentChannelId, onKeyDown: originalKeyDown }] = args;
     const channel = ChannelStore.getChannel(CurrentChannelId);
     const editNagivation = SettingValues.get("editNagivation", defaultSettings.editNagivation);
     const replyNagivation = SettingValues.get("replyNagivation", defaultSettings.replyNagivation);
@@ -32,7 +33,9 @@ export default (): void => {
       "replyNagivationModifier",
       defaultSettings.replyNagivationModifier,
     );
+
     if (
+      originalKeyDown[PatchedCC] ||
       !CurrentChannelId ||
       !(
         Modules.PermissionStore.can(DiscordConstants.Permissions.VIEW_CHANNEL, channel) ||
@@ -43,35 +46,32 @@ export default (): void => {
     )
       return args;
 
-    const originalKeyDown = args[0].onKeyDown;
-    if (!originalKeyDown[PatchedCC])
-      args[0].onKeyDown = (e: React.KeyboardEvent) => {
-        if (
-          (e.key === "ArrowUp" || e.key === "ArrowDown") &&
-          (Utils.checkForModifier(editNagivation, editNagivationModifier, e) ||
-            Utils.checkForModifier(replyNagivation, replyNagivationModifier, e))
-        ) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        if (e.repeat) {
-          originalKeyDown(e);
-          return;
-        }
-        if (
-          Utils.checkForModifier(editNagivation, editNagivationModifier, e) &&
-          e.key === "ArrowUp"
-        ) {
-          const Messages = UltimateMessageStore.getMessages(CurrentChannelId);
-          const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
-          const UserMessages = Messages.toArray().filter(
-            (c) => c.author.id === UltimateUserStore.getCurrentUser().id,
-          );
+    args[0].onKeyDown = (e: React.KeyboardEvent) => {
+      const isArrowUp = e.key === "ArrowUp";
+      const isArrowDown = e.key === "ArrowDown";
+      const isEditNagivation = Utils.checkForModifier(editNagivation, editNagivationModifier, e);
+      const isReplyNagivation = Utils.checkForModifier(replyNagivation, replyNagivationModifier, e);
+
+      if (e.repeat || (!isArrowUp && !isArrowDown) || (!isEditNagivation && !isReplyNagivation))
+        return originalKeyDown(e);
+
+      const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray();
+      const UserMessages = Messages.filter(
+        (c) => c.author.id === UltimateUserStore.getCurrentUser().id,
+      );
+      const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      switch (true) {
+        case isEditNagivation && isArrowUp: {
           const MessageToEdit = UserMessages.at(
             (EditingMessageId
               ? UserMessages.findIndex((c) => c.id === EditingMessageId) || NaN
               : 0) - 1,
           );
+
           if (MessageToEdit)
             MessageActions.startEditMessage(
               MessageToEdit.channel_id,
@@ -79,12 +79,10 @@ export default (): void => {
               MessageToEdit.content,
             );
           else MessageActions.endEditMessage(CurrentChannelId, "");
+          break;
         }
-        if (
-          Utils.checkForModifier(replyNagivation, replyNagivationModifier, e) &&
-          e.key === "ArrowUp"
-        ) {
-          const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray();
+
+        case isReplyNagivation && isArrowUp: {
           const ReplyingMessageId = PendingReplyStore.getPendingReply(CurrentChannelId)?.message.id;
           const MessageToReply = Messages.at(
             (ReplyingMessageId ? Messages.findIndex((c) => c.id === ReplyingMessageId) || NaN : 0) -
@@ -106,19 +104,16 @@ export default (): void => {
               flash: true,
             });
           } else MoreMessageActions.deletePendingReply(CurrentChannelId);
+          break;
         }
-        if (
-          Utils.checkForModifier(editNagivation, editNagivationModifier, e) &&
-          e.key === "ArrowDown"
-        ) {
-          const Messages = UltimateMessageStore.getMessages(CurrentChannelId);
-          const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
-          const UserMessages = Messages.toArray()
-            .reverse()
-            .filter((c) => c.author.id === UltimateUserStore.getCurrentUser().id);
+
+        case isEditNagivation && isArrowDown: {
+          const UserMessagesReverse = UserMessages.reverse();
           const MessageToEdit =
-            UserMessages[
-              (EditingMessageId ? UserMessages.findIndex((c) => c.id === EditingMessageId) : 0) - 1
+            UserMessagesReverse[
+              (EditingMessageId
+                ? UserMessagesReverse.findIndex((c) => c.id === EditingMessageId)
+                : 0) - 1
             ];
           if (MessageToEdit)
             MessageActions.startEditMessage(
@@ -127,16 +122,17 @@ export default (): void => {
               MessageToEdit.content,
             );
           else MessageActions.endEditMessage(CurrentChannelId, "");
+          break;
         }
-        if (
-          Utils.checkForModifier(replyNagivation, replyNagivationModifier, e) &&
-          e.key === "ArrowDown"
-        ) {
-          const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray().reverse();
+
+        case isReplyNagivation && isArrowDown: {
+          const MessagesReverse = Messages.reverse();
           const ReplyingMessageId = PendingReplyStore.getPendingReply(CurrentChannelId)?.message.id;
           const MessageToReply =
-            Messages[
-              (ReplyingMessageId ? Messages.findIndex((c) => c.id === ReplyingMessageId) : 0) - 1
+            MessagesReverse[
+              (ReplyingMessageId
+                ? MessagesReverse.findIndex((c) => c.id === ReplyingMessageId)
+                : 0) - 1
             ];
           if (MessageToReply) {
             MoreMessageActions.createPendingReply({
@@ -151,9 +147,13 @@ export default (): void => {
               flash: true,
             });
           } else MoreMessageActions.deletePendingReply(CurrentChannelId);
+          break;
         }
-        originalKeyDown(e);
-      };
+      }
+
+      originalKeyDown(e);
+    };
+
     args[0].onKeyDown[PatchedCC] = true;
 
     return args;
