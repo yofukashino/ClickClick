@@ -8,7 +8,7 @@ import { PluginInjector, SettingValues } from "../index";
 import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";
-const Pressed = new Map<string, boolean>();
+const PatchedCC = Symbol("ClickClick");
 export default (): void => {
   const {
     ChannelStore,
@@ -20,51 +20,48 @@ export default (): void => {
   } = Modules;
   const Editable = webpack.getFunctionKeyBySource(Slate, "isDraggingInternally");
   PluginInjector.before(Slate, Editable, (args) => {
+    const CurrentChannelId = args[0].channelId;
+    const channel = ChannelStore.getChannel(CurrentChannelId);
+    const editNagivation = SettingValues.get("editNagivation", defaultSettings.editNagivation);
+    const replyNagivation = SettingValues.get("replyNagivation", defaultSettings.replyNagivation);
+    const editNagivationModifier = SettingValues.get(
+      "editNagivationModifier",
+      defaultSettings.editNagivationModifier,
+    );
+    const replyNagivationModifier = SettingValues.get(
+      "replyNagivationModifier",
+      defaultSettings.replyNagivationModifier,
+    );
     if (
-      args[0].channelId &&
-      (Modules.PermissionStore.can(
-        DiscordConstants.Permissions.VIEW_CHANNEL,
-        ChannelStore.getChannel(args[0].channelId),
-      ) ||
-        ChannelStore.getChannel(args[0].channelId)?.isPrivate?.()) &&
-      (SettingValues.get("editNagivation", defaultSettings.editNagivation) ||
-        SettingValues.get("replyNagivation", defaultSettings.replyNagivation)) &&
+      !CurrentChannelId ||
       !(
-        SettingValues.get("editNagivation", defaultSettings.editNagivation) ===
-          SettingValues.get("replyNagivation", defaultSettings.replyNagivation) &&
-        SettingValues.get("editNagivationModifier", defaultSettings.editNagivationModifier) ===
-          SettingValues.get("replyNagivationModifier", defaultSettings.replyNagivationModifier)
-      )
-    ) {
-      const originalKeyDown = args[0].onKeyDown;
+        Modules.PermissionStore.can(DiscordConstants.Permissions.VIEW_CHANNEL, channel) ||
+        channel?.isPrivate?.()
+      ) ||
+      (!editNagivation && !replyNagivation) ||
+      (editNagivation === replyNagivation && editNagivationModifier === replyNagivationModifier)
+    )
+      return args;
+
+    const originalKeyDown = args[0].onKeyDown;
+    if (!originalKeyDown[PatchedCC])
       args[0].onKeyDown = (e: React.KeyboardEvent) => {
         if (
           (e.key === "ArrowUp" || e.key === "ArrowDown") &&
-          (Utils.checkForModifier(
-            SettingValues.get("editNagivation", defaultSettings.editNagivation),
-            SettingValues.get("editNagivationModifier", defaultSettings.editNagivationModifier),
-            e,
-          ) ||
-            Utils.checkForModifier(
-              SettingValues.get("replyNagivation", defaultSettings.replyNagivation),
-              SettingValues.get("replyNagivationModifier", defaultSettings.replyNagivationModifier),
-              e,
-            ))
+          (Utils.checkForModifier(editNagivation, editNagivationModifier, e) ||
+            Utils.checkForModifier(replyNagivation, replyNagivationModifier, e))
         ) {
           e.preventDefault();
           e.stopPropagation();
         }
+        if (e.repeat) {
+          originalKeyDown(e);
+          return;
+        }
         if (
-          Utils.checkForModifier(
-            SettingValues.get("editNagivation", defaultSettings.editNagivation),
-            SettingValues.get("editNagivationModifier", defaultSettings.editNagivationModifier),
-            e,
-          ) &&
-          e.key === "ArrowUp" &&
-          !Pressed.get("ArrowUp")
+          Utils.checkForModifier(editNagivation, editNagivationModifier, e) &&
+          e.key === "ArrowUp"
         ) {
-          Pressed.set("ArrowUp", true);
-          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId);
           const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
           const UserMessages = Messages.toArray().filter(
@@ -84,16 +81,9 @@ export default (): void => {
           else MessageActions.endEditMessage(CurrentChannelId, "");
         }
         if (
-          Utils.checkForModifier(
-            SettingValues.get("replyNagivation", defaultSettings.replyNagivation),
-            SettingValues.get("replyNagivationModifier", defaultSettings.replyNagivationModifier),
-            e,
-          ) &&
-          e.key === "ArrowUp" &&
-          !Pressed.get("ArrowUp")
+          Utils.checkForModifier(replyNagivation, replyNagivationModifier, e) &&
+          e.key === "ArrowUp"
         ) {
-          Pressed.set("ArrowUp", true);
-          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray();
           const ReplyingMessageId = PendingReplyStore.getPendingReply(CurrentChannelId)?.message.id;
           const MessageToReply = Messages.at(
@@ -118,16 +108,9 @@ export default (): void => {
           } else MoreMessageActions.deletePendingReply(CurrentChannelId);
         }
         if (
-          Utils.checkForModifier(
-            SettingValues.get("editNagivation", defaultSettings.editNagivation),
-            SettingValues.get("editNagivationModifier", defaultSettings.editNagivationModifier),
-            e,
-          ) &&
-          e.key === "ArrowDown" &&
-          !Pressed.get("ArrowDown")
+          Utils.checkForModifier(editNagivation, editNagivationModifier, e) &&
+          e.key === "ArrowDown"
         ) {
-          Pressed.set("ArrowDown", true);
-          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId);
           const EditingMessageId = EditMessageStore.getEditingMessageId(CurrentChannelId);
           const UserMessages = Messages.toArray()
@@ -146,16 +129,9 @@ export default (): void => {
           else MessageActions.endEditMessage(CurrentChannelId, "");
         }
         if (
-          Utils.checkForModifier(
-            SettingValues.get("replyNagivation", defaultSettings.replyNagivation),
-            SettingValues.get("replyNagivationModifier", defaultSettings.replyNagivationModifier),
-            e,
-          ) &&
-          e.key === "ArrowDown" &&
-          !Pressed.get("ArrowDown")
+          Utils.checkForModifier(replyNagivation, replyNagivationModifier, e) &&
+          e.key === "ArrowDown"
         ) {
-          Pressed.set("ArrowDown", true);
-          const CurrentChannelId = args[0].channelId;
           const Messages = UltimateMessageStore.getMessages(CurrentChannelId).toArray().reverse();
           const ReplyingMessageId = PendingReplyStore.getPendingReply(CurrentChannelId)?.message.id;
           const MessageToReply =
@@ -178,21 +154,8 @@ export default (): void => {
         }
         originalKeyDown(e);
       };
-      const originalKeyUp = args[0].onKeyUp;
-      args[0].onKeyUp = (e: React.KeyboardEvent) => {
-        if (e.key === "ArrowUp") {
-          e.preventDefault();
-          e.stopPropagation();
-          Pressed.set("ArrowUp", false);
-        }
-        if (e.key === "ArrowDown") {
-          e.preventDefault();
-          e.stopPropagation();
-          Pressed.set("ArrowDown", false);
-        }
-        originalKeyUp(e);
-      };
-    }
+    args[0].onKeyDown[PatchedCC] = true;
+
     return args;
   });
 };
